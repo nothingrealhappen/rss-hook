@@ -1,0 +1,19 @@
+{
+  "name": "rss-hook",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/liyaodong/rss-hook.git",
+  "author": "Yaodong Li <mail@liyaodong.com>",
+  "scripts": {
+    "start": "node app"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "koa": "^2.13.1",
+    "rss-parser": "^3.12.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.3.2"
+  }
+}
