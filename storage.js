@@ -13,7 +13,7 @@ const createObject = async (fileHash) => {
   const command = new PutObjectCommand({
     Bucket: config.s3.bucket,
     Key: fileHash,
-    Body: JSON.stringify({}),
+    Body: JSON.stringify([]),
   });
   return await client.send(command);
 };
@@ -33,7 +33,7 @@ const getFeedData = async (url) => {
   } catch (e) {
     if (/NoSuchKey/i.test(e.message)) {
       await createObject(fileHash);
-      result = {};
+      result = [];
     }
   }
 

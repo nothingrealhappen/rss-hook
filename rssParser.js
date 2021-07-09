@@ -1,3 +1,4 @@
+const md5 = require("md5");
 const Parser = require("rss-parser");
 const parser = new Parser();
 
@@ -6,4 +7,7 @@ const parseFeed = async (url) => {
   return feed.items;
 };
 
-module.exports = { parseFeed };
+const generateIdForEachItem = (items) =>
+  items.map((x) => ({ ...x, hash: md5(x.link) }));
+
+module.exports = { parseFeed, generateIdForEachItem };

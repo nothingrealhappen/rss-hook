@@ -1,15 +1,15 @@
 const Koa = require("koa");
 
 const { PORT = 3000 } = process.env;
-const { apiKey, feedList } = require("./config");
-const { parseFeed } = require("./rssParser");
+const { apiKey, feedList, MAX_ITEMS_TO_SEARCH } = require("./config");
+const { parseFeed, generateIdForEachItem } = require("./rssParser");
+const { getFeedData } = require("./storage");
 
 const app = new Koa();
 app.listen(PORT);
 
 app.use(async (ctx) => {
   const apiKeyFromUrl = ctx.request.query.apiKey;
-  console.log(apiKeyFromUrl, apiKey);
 
   if (apiKeyFromUrl !== apiKey) {
     ctx.body = "Error";
@@ -17,9 +17,27 @@ app.use(async (ctx) => {
   }
 
   const allFeedsRequest = feedList.map((x) => parseFeed(x));
-  await Promise.all(allFeedsRequest).then((data, index) => {
-    const currentUrl = feedList[index];
-  });
+  const itemsShouldNotify = await Promise.all(allFeedsRequest).then(
+    async (responses) => {
+      return await Promise.all(
+        responses.map(async (rssItems, index) => {
+          const currentUrl = feedList[index];
+          const rssItemsWithHash = generateIdForEachItem(rssItems);
+          const previousFeedData = await getFeedData(currentUrl);
 
-  ctx.body = "Hello";
+          const rssItemsShouldNotify = rssItemsWithHash
+            .filter((_x, index) => index < MAX_ITEMS_TO_SEARCH)
+            .filter((x) => !previousFeedData.includes(x.hash));
+
+          return {
+            url: currentUrl,
+            notifyItems: rssItemsShouldNotify,
+          };
+        })
+      );
+    }
+  );
+  console.log(itemsShouldNotify);
+
+  ctx.body = JSON.stringify(itemsShouldNotify);
 });
