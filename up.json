@@ -7,7 +7,7 @@
       {
         "Effect": "Allow",
         "Resource": "*",
-        "Action": ["s3:Get*", "s3:List*", "s3:PutItem", "s3:DeleteItem"]
+        "Action": ["s3:*"]
       }
     ]
   }

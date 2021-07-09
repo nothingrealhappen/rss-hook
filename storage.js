@@ -7,7 +7,12 @@ const md5 = require("md5");
 
 const config = require("./config");
 
-const client = new S3Client({ region: config.s3.region });
+const clientConfig = {
+  region: config.s3.region,
+  credentials: config.s3.credentials,
+};
+
+const client = new S3Client(clientConfig);
 
 const createObject = async (fileHash) => {
   const command = new PutObjectCommand({

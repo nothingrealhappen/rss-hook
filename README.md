@@ -11,4 +11,4 @@
 
 `$ up`
 
-See more detail on apex up document
+See more detail on [apex up](https://apex.sh/docs/up/) document
