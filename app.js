@@ -1,9 +1,9 @@
 const Koa = require("koa");
 
 const { PORT = 3000 } = process.env;
-const { apiKey, feedList, MAX_ITEMS_TO_SEARCH } = require("./config");
+const { apiKey, feedList, MAX_ITEMS_TO_SEARCH, hook } = require("./config");
 const { parseFeed, generateIdForEachItem } = require("./rssParser");
-const { getFeedData } = require("./storage");
+const { getFeedData, setFeedData } = require("./storage");
 
 const app = new Koa();
 app.listen(PORT);
@@ -32,12 +32,25 @@ app.use(async (ctx) => {
           return {
             url: currentUrl,
             notifyItems: rssItemsShouldNotify,
+            previousFeedData,
           };
         })
       );
     }
   );
-  console.log(itemsShouldNotify);
+
+  await Promise.all(
+    itemsShouldNotify.map(hook).map((hookRes, index) => {
+      return hookRes.then(() => {
+        const currentItem = itemsShouldNotify[index];
+        const finalFeedDataToS3 = []
+          .concat(currentItem.notifyItems.map((x) => x.hash))
+          .concat(currentItem.previousFeedData);
+
+        return setFeedData(currentItem.url, finalFeedDataToS3);
+      });
+    })
+  );
 
   ctx.body = JSON.stringify(itemsShouldNotify);
 });
