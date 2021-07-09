@@ -27,7 +27,7 @@ app.use(async (ctx) => {
 
           const rssItemsShouldNotify = rssItemsWithHash
             .filter((_x, index) => index < MAX_ITEMS_TO_SEARCH)
-            .filter((x) => !previousFeedData.includes(x.hash));
+            .filter((x) => !(previousFeedData || []).includes(x.hash));
 
           return {
             url: currentUrl,
