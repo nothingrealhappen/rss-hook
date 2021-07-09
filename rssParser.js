@@ -3,5 +3,7 @@ const parser = new Parser();
 
 const parseFeed = async (url) => {
   const feed = await parser.parseURL(url);
-  return feed;
+  return feed.items;
 };
+
+module.exports = { parseFeed };
