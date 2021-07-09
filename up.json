@@ -1,5 +1,14 @@
 {
   "name": "rss-hook",
   "profile": "default",
-  "regions": ["ap-south-1"]
+  "regions": ["ap-south-1"],
+  "lambda": {
+    "policy": [
+      {
+        "Effect": "Allow",
+        "Resource": "*",
+        "Action": ["s3:Get*", "s3:List*", "s3:PutItem", "s3:DeleteItem"]
+      }
+    ]
+  }
 }
