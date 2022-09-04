@@ -3,6 +3,7 @@
   "profile": "default",
   "regions": ["ap-south-1"],
   "lambda": {
+    "runtime": "nodejs16.x",
     "policy": [
       {
         "Effect": "Allow",
